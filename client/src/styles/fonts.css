@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../shared/assets/fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: 300 400 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../shared/assets/fonts/Montserrat-Medium.ttf') format('truetype');
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../shared/assets/fonts/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700 800 900;
+  font-style: normal;
+  font-display: swap;
+}

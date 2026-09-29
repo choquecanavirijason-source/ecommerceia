@@ -1,0 +1,209 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #05080C;
+  --foreground: #EAF2F8;
+  --card: #0B1D34;
+  --card-foreground: #EAF2F8;
+  --popover: #0B1D34;
+  --popover-foreground: #EAF2F8;
+  --primary: #287FF0;
+  --primary-foreground: #ffffff;
+  --secondary: #0B1D34;
+  --secondary-foreground: #42C7E8;
+  --muted: #0B1D34;
+  --muted-foreground: #91A7BC;
+  --accent: #42C7E8;
+  --accent-foreground: #05080C;
+  --destructive: #d32f2f;
+  --destructive-foreground: #ffffff;
+  --border: #1a3353;
+  --input: transparent;
+  --input-background: #0B1D34;
+  --switch-background: #287FF0;
+  --font-weight-medium: 600;
+  --font-weight-normal: 400;
+  --ring: #42C7E8;
+  --chart-1: #287FF0;
+  --chart-2: #42C7E8;
+  --chart-3: #91A7BC;
+  --chart-4: #0B1D34;
+  --chart-5: #EAF2F8;
+  --radius: 0.625rem;
+  --sidebar: #05080C;
+  --sidebar-foreground: #EAF2F8;
+  --sidebar-primary: #287FF0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0B1D34;
+  --sidebar-accent-foreground: #EAF2F8;
+  --sidebar-border: #1a3353;
+  --sidebar-ring: #42C7E8;
+}
+
+.dark {
+  --background: #05080C;
+  --foreground: #EAF2F8;
+  --card: #0B1D34;
+  --card-foreground: #EAF2F8;
+  --popover: #0B1D34;
+  --popover-foreground: #EAF2F8;
+  --primary: #287FF0;
+  --primary-foreground: #ffffff;
+  --secondary: #0B1D34;
+  --secondary-foreground: #42C7E8;
+  --muted: #0B1D34;
+  --muted-foreground: #91A7BC;
+  --accent: #42C7E8;
+  --accent-foreground: #05080C;
+  --destructive: #d32f2f;
+  --destructive-foreground: #ffffff;
+  --border: #1a3353;
+  --input: #0B1D34;
+  --ring: #42C7E8;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #287FF0;
+  --chart-2: #42C7E8;
+  --chart-3: #91A7BC;
+  --chart-4: #0B1D34;
+  --chart-5: #EAF2F8;
+  --sidebar: #05080C;
+  --sidebar-foreground: #EAF2F8;
+  --sidebar-primary: #287FF0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0B1D34;
+  --sidebar-accent-foreground: #EAF2F8;
+  --sidebar-border: #1a3353;
+  --sidebar-ring: #42C7E8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-heading: 'Montserrat', sans-serif;
+  --font-subheading: 'Montserrat', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-reading: 'Inter', sans-serif;
+}
+
+@utility font-heading {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+@utility font-subheading {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+@utility font-reading {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  /* Titulares: Montserrat Bold (700) */
+  h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  /* Apoyo / Subtítulos: Montserrat Medium (500) */
+  h4, h5, h6, .subheading, .subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Textos de lectura: Inter Regular (400) */
+  p, span, a, input, textarea, select, li, label, button, td, th {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    line-height: 1.35;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    line-height: 1.4;
+  }
+
+  label {
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+}

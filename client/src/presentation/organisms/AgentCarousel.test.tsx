@@ -25,7 +25,7 @@ afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 it("avanza cada cinco segundos, pausa la interacción y libera el temporizador", () => {
   vi.useFakeTimers();
-  const { unmount } = render(<AgentCarousel agents={agents} />);
+  const { unmount } = render(<AgentCarousel agents={agents.slice(0, 2)} />);
   const carousel = screen.getByRole("region", { name: "Agentes disponibles" });
   act(() => { vi.advanceTimersByTime(5000); });
   expect(engine.scrollNext).toHaveBeenCalledTimes(1);

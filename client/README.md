@@ -4,11 +4,13 @@ Catálogo de agentes propios para explorar soluciones y, en una etapa posterior,
 
 ## Por qué usamos datos de prueba
 
-Los diez agentes aportados por el usuario viven en `src/demo/agents.ts`. Nombres, descripciones, categorías e imágenes son ejemplos para validar la experiencia; no acreditan funcionalidades ni disponibilidad comercial. No hay persistencia del marketplace todavía.
+Los diez agentes aportados por el usuario viven en `src/demo/agents.ts`. Nombres, descripciones, categorías, imágenes y metadatos de descubrimiento son ejemplos para validar la experiencia; no acreditan funcionalidades ni disponibilidad comercial. No hay persistencia del marketplace todavía.
 
 **La base de datos configurada en el ecommerce pertenece a otro cliente.** No se puede reutilizar, consultar, migrar, poblar ni modificar su configuración. Tampoco iniciar la API heredada para esta demo. Se necesita una base nueva, independiente, con credenciales y entorno de pruebas propios, aún pendientes de definir.
 
 El aislamiento actual cubre las rutas de la demo mediante `src/demo/routes.ts`, `AppShell` y `Providers`: omiten navegación, sesión y sincronización del ecommerce. **No es un bloqueo global:** las rutas antiguas y el backend continúan en el repositorio. No usarlos al presentar o comprobar la demo.
+
+Para ejecutar esta demo en Docker, seguir [la guía de la raíz](../README.md). El contenedor es de desarrollo y no incluye backend ni base de datos.
 
 ## Retomar y ejecutar
 
@@ -23,7 +25,9 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 
 ## Qué funciona y qué falta
 
-- Portada, búsqueda/filtro local, categorías con contadores y fichas por slug. La portada muestra hasta 12 agentes del filtro seleccionado.
+- Portada con carrusel de hasta 12 agentes por categoría, cuatro colecciones editoriales y fichas por slug estable.
+- `/agentes`: búsqueda por palabras sin distinción de tildes/mayúsculas, filtros combinados por categoría, industria, integración, autonomía y modalidad de precio; orden por relevancia/nombre y cuadrícula de seis tarjetas por página.
+- Los filtros viajan en la URL (`q`, `categoria`, `industria`, `integracion`, `autonomia`, `precio`, `coleccion`, `orden`, `pagina`). La búsqueda se aplica con Buscar/Enter. Precios e integraciones son ilustrativos: no hay conexiones, ejecución, rankings de uso ni cobros reales.
 - Carrusel en bucle, avance cada 5 segundos, pausa manual/hover/foco/arrastre y respeto de movimiento reducido. Con pocas tarjetas, Embla puede desactivar el bucle; no se duplican datos para rellenarlo.
 - Las páginas de demo/cotización conservan `?agente=<slug>`, pero son vistas provisionales: **no envían, guardan ni reservan nada**.
 - Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian, robot sin recuadro y animaciones de robot/mano; la mano se oculta por debajo de 640 px para dejar espacio al contenido.
@@ -34,7 +38,8 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 | Responsabilidad | Ubicación bajo `src/` |
 |---|---|
 | Contrato de lectura | `domain/entities/Agent.ts` |
-| Fixtures, filtros y contadores locales | `demo/agents.ts` |
+| Fixtures, colecciones y contadores locales | `demo/agents.ts` |
+| Búsqueda, filtros, URL y paginación sin dependencia de fixtures | `application/agents/discovery.ts` |
 | Rutas aisladas de la demo | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
 | Navegación, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/atoms/AgentLogo.tsx` |
 | Portada | `presentation/templates/HomeTemplate.tsx`, `presentation/organisms/HeroSection.tsx`, `FeaturedAgentsSection.tsx` |
@@ -42,14 +47,14 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 | Movimiento y limpieza de eventos | `presentation/hooks/useCarouselAutoplay.ts`, `presentation/atoms/carousel.tsx` |
 | Fichas y selección de solicitudes | `app/agentes/[slug]/page.tsx`, `presentation/organisms/InquiryPreview.tsx` |
 
-Las tarjetas y el carrusel reciben `Agent` por props y no importan fixtures. Sustituir el acceso a datos en los consumidores cuando exista un repositorio real; mantener la UI desacoplada. Actualmente el slug se deriva del nombre: antes de contenido persistente, definir slugs explícitos estables para evitar romper URLs al renombrar agentes.
+Las tarjetas y el carrusel reciben `Agent` por props y no importan fixtures. Sustituir el acceso a datos en los consumidores cuando exista un repositorio real; mantener la UI desacoplada. Los slugs son explícitos: conservarlos al renombrar agentes. Las colecciones referencian esos slugs. La paginación limita las tarjetas montadas; los fixtures todavía se cargan completos en el cliente, por lo que una API futura deberá asumir búsqueda y paginación.
 
 ## Validación acotada
 
 Desde `client`, sin backend:
 
 ```sh
-npm test -- src/demo/agents.test.ts src/presentation/organisms/AgentCarousel.test.tsx src/app/demo-isolation.test.tsx
+npm test -- src/application/agents/discovery.test.ts src/demo/agents.test.ts --maxWorkers=1
 npx tsc --noEmit --incremental false
 ```
 

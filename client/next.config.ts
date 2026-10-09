@@ -5,7 +5,6 @@ const isProd = process.env.NODE_ENV === "production";
 const nextConfig: NextConfig = {
   ...(isProd ? { output: "export" } : {}),
   trailingSlash: true,
-  allowedDevOrigins: ['*'],
   images: {
     unoptimized: true,
     remotePatterns: [

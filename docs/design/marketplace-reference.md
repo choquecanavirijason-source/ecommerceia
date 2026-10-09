@@ -1,6 +1,3 @@
-# Dirección visual del marketplace
-
-Referencia compartida por el usuario el 28 de septiembre de 2026. Esta imagen prevalece para el diseño y la paleta de colores. No se requiere un enlace de Figma para trabajar a partir de ella.
 
 ![Referencia visual del usuario](marketplace-reference.png)
 

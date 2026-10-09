@@ -1,0 +1,18 @@
+name: agentes-demo
+
+services:
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "127.0.0.1:${DEMO_PORT:-3001}:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Las rutas heredadas no deben apuntar al ecommerce desde esta demo.
+      NEXT_PUBLIC_API_URL: http://127.0.0.1:1/api/v1
+      API_BUILD_URL: http://127.0.0.1:1/api/v1
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256

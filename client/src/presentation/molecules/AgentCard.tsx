@@ -1,3 +1,4 @@
+import { autonomyLabels, pricingLabels } from "./agentLabels";
 import Image from "next/image";
 import Link from "next/link";
 import type { Agent } from "@/domain/entities/Agent";
@@ -13,6 +14,11 @@ export function AgentCard({ agent }: { agent: Agent }) {
       <div className="flex flex-1 flex-col p-5">
         <h3 className="text-lg font-bold text-[#EAF2F8] mb-1 group-hover:text-[#42C7E8] transition-colors"><Link href={`/agentes/${agent.slug}`}>{agent.name}</Link></h3>
         <p className="text-xs text-[#91A7BC] mb-4 line-clamp-2 min-h-8">{agent.desc}</p>
+        <div className="mb-4 space-y-2 text-xs text-[#91A7BC]">
+          <p className="text-[#42C7E8]">{pricingLabels[agent.pricing.model]} · Ejemplo</p>
+          <p>{autonomyLabels[agent.autonomy]}</p>
+          <p>Integraciones de ejemplo: {agent.integrations.join(" · ")}</p>
+        </div>
         <Link href={`/solicitar-demo?agente=${agent.slug}`} className="mt-auto block w-full text-center bg-[#287FF0]/10 hover:bg-[#287FF0]/20 border border-[#287FF0]/30 text-[#42C7E8] text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider transition-colors">Solicitar demo</Link>
       </div>
     </article>

@@ -46,7 +46,7 @@ export function FeaturedAgentsSection({
         <AgentCarousel agents={featuredAgents} />
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
           <p className="text-[#91A7BC]">{featuredAgents.length} de {filteredAgents.length} agentes · {activeCategory === "Todos" ? "Todas las categorías" : activeCategory}</p>
-          <Link href="/agentes" className="font-semibold text-[#42C7E8] hover:underline">Explorar el catálogo completo →</Link>
+          <Link href={activeCategory === "Todos" ? "/agentes" : `/agentes?categoria=${encodeURIComponent(activeCategory)}`} className="font-semibold text-[#42C7E8] hover:underline">Explorar el catálogo completo →</Link>
         </div>
         
         {filteredAgents.length === 0 && (
@@ -59,4 +59,3 @@ export function FeaturedAgentsSection({
     </section>
   );
 }
-

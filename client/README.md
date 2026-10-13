@@ -10,7 +10,7 @@ Los diez agentes aportados por el usuario viven en `src/demo/agents.ts`. Nombres
 
 El aislamiento actual cubre las rutas de la demo mediante `src/demo/routes.ts`, `AppShell` y `Providers`: omiten navegación, sesión y sincronización del ecommerce. **No es un bloqueo global:** las rutas antiguas y el backend continúan en el repositorio. No usarlos al presentar o comprobar la demo.
 
-Para ejecutar esta demo en Docker, seguir [la guía de la raíz](../README.md). El contenedor es de desarrollo y no incluye backend ni base de datos.
+Para arrancar el frontend localmente, abrir una terminal en `client` y ejecutar `npm ci` (primera vez) y luego `npm run dev`. No requiere Docker, backend ni base de datos.
 
 ## Retomar y ejecutar
 
@@ -30,7 +30,7 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 - Los filtros viajan en la URL (`q`, `categoria`, `industria`, `integracion`, `autonomia`, `precio`, `coleccion`, `orden`, `pagina`). La búsqueda se aplica con Buscar/Enter. Precios e integraciones son ilustrativos: no hay conexiones, ejecución, rankings de uso ni cobros reales.
 - Carrusel en bucle, avance cada 5 segundos, pausa manual/hover/foco/arrastre y respeto de movimiento reducido. Con pocas tarjetas, Embla puede desactivar el bucle; no se duplican datos para rellenarlo.
 - Las páginas de demo/cotización conservan `?agente=<slug>`, pero son vistas provisionales: **no envían, guardan ni reservan nada**.
-- Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian, robot sin recuadro y animaciones de robot/mano; la mano se oculta por debajo de 640 px para dejar espacio al contenido.
+- Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian y robot sin recuadro. En portada, GSAP fija el hero mientras cambia los textos y sincroniza los fotogramas del video con el scroll; respeta movimiento reducido.
 - Quedan pendientes formulario, persistencia independiente, administración de agentes/solicitudes, contenido definitivo y publicación segura.
 
 ## Mapa para continuar

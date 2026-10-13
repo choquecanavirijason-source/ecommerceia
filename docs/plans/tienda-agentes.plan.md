@@ -17,7 +17,7 @@ El aislamiento cubre solo `/`, `/agentes`, sus fichas y las vistas de solicitud.
 | Etapa 1: descubrimiento | Implementada con fixtures: búsqueda de múltiples palabras, filtros combinables, URL compartible, orden por relevancia/nombre y seis tarjetas por página |
 | Datos | Diez agentes; slugs explícitos, etiquetas, industria, integraciones, autonomía y modalidad de precio. Todos los atributos comerciales son ejemplos |
 | Colecciones | Cuatro selecciones editoriales por caso de uso, visibles en portada y catálogo; sin popularidad, ratings o estadísticas inventadas |
-| Portada | Hero y animaciones conservados; carrusel de hasta 12 agentes por categoría y enlace al catálogo filtrado |
+| Portada | Hero con textos en slider fijado al scroll y video sincronizado; carrusel de hasta 12 agentes por categoría y enlace al catálogo filtrado |
 | Carrusel | Bucle cuando hay suficientes tarjetas, avance cada 5 s; pausa manual/hover/foco/arrastre, pestaña oculta y movimiento reducido |
 | Fichas y solicitudes | Fichas por slug. Las vistas de demo/cotización conservan el agente seleccionado, sin formulario real, envío ni almacenamiento |
 | Backend | No implementado para el marketplace; backend heredado fuera del alcance |

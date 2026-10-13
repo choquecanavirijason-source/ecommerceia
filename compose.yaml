@@ -9,9 +9,22 @@ services:
     environment:
       NODE_ENV: development
       NEXT_TELEMETRY_DISABLED: "1"
-      # Las rutas heredadas no deben apuntar al ecommerce desde esta demo.
+      # Evita que las rutas heredadas del cliente llamen al ecommerce.
       NEXT_PUBLIC_API_URL: http://127.0.0.1:1/api/v1
       API_BUILD_URL: http://127.0.0.1:1/api/v1
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+
+  laravel:
+    build:
+      context: ./server
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
     init: true
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]

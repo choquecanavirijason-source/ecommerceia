@@ -40,9 +40,16 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 | Contrato de lectura | `domain/entities/Agent.ts` |
 | Fixtures, colecciones y contadores locales | `demo/agents.ts` |
 | Búsqueda, filtros, URL y paginación sin dependencia de fixtures | `application/agents/discovery.ts` |
-| Rutas aisladas de la demo | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
-| Navegación, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/atoms/AgentLogo.tsx` |
+| Recomendación local para chat guiado | `application/agents/recommend.ts` |
+| Soluciones agrupadas por industria | `application/agents/solutions.ts` |
+| Rutas aisladas de la demo (`/`, `/agentes`, `/chat`, solicitudes) | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
+| Navegación, menú de soluciones, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/organisms/SolutionsMenu.tsx`, `presentation/atoms/AgentLogo.tsx` |
+| Chat guiado simulado | `app/chat/page.tsx` |
 | Portada | `presentation/templates/HomeTemplate.tsx`, `presentation/organisms/HeroSection.tsx`, `FeaturedAgentsSection.tsx` |
+| Efectos interactivos y animación | `presentation/atoms/Magnet.tsx`, `presentation/atoms/AnimatedText.tsx` |
+| Marquee, manifiesto y escenarios sticky | `presentation/organisms/MarqueeSection.tsx`, `presentation/organisms/ManifestoSection.tsx`, `presentation/organisms/StickyScenarios.tsx` |
+| Capacidades y FAQ accesible | `presentation/organisms/CapabilitiesSection.tsx`, `presentation/organisms/FaqSection.tsx` |
+| Próximos pasos útiles | `presentation/organisms/PromoBannerGrid.tsx` |
 | Catálogo y tarjetas | `presentation/organisms/AgentCatalogue.tsx`, `AgentCarousel.tsx`, `presentation/molecules/AgentCard.tsx` |
 | Movimiento y limpieza de eventos | `presentation/hooks/useCarouselAutoplay.ts`, `presentation/atoms/carousel.tsx` |
 | Fichas y selección de solicitudes | `app/agentes/[slug]/page.tsx`, `presentation/organisms/InquiryPreview.tsx` |
@@ -54,7 +61,7 @@ Las tarjetas y el carrusel reciben `Agent` por props y no importan fixtures. Sus
 Desde `client`, sin backend:
 
 ```sh
-npm test -- src/application/agents/discovery.test.ts src/demo/agents.test.ts --maxWorkers=1
+npm test -- src/application/agents/ src/demo/agents.test.ts src/app/demo-isolation.test.tsx
 npx tsc --noEmit --incremental false
 ```
 

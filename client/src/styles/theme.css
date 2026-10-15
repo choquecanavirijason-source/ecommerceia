@@ -138,6 +138,36 @@
   font-weight: 400 !important;
 }
 
+@utility hero-heading {
+  background: linear-gradient(180deg, #EAF2F8 20%, #42C7E8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes marquee-ltr {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-rtl {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.animate-marquee-ltr {
+  animation: marquee-ltr 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-rtl {
+  animation: marquee-rtl 36s linear infinite;
+  will-change: transform;
+}
+
+.pause-on-hover:hover {
+  animation-play-state: paused;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

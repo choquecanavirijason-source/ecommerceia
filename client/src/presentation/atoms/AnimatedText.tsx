@@ -70,9 +70,9 @@ export function AnimatedText({
           <span
             key={index}
             style={{
-              opacity,
+              opacity: isRevealed ? 1 : 0,
               transition: "opacity 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)",
-              color: isRevealed ? "#EAF2F8" : "#91A7BC",
+              color:  "#EAF2F8",
             }}
           >
             {token}

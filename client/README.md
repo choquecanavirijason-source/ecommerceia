@@ -31,6 +31,7 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 - Carrusel en bucle, avance cada 5 segundos, pausa manual/hover/foco/arrastre y respeto de movimiento reducido. Con pocas tarjetas, Embla puede desactivar el bucle; no se duplican datos para rellenarlo.
 - Las páginas de demo/cotización conservan `?agente=<slug>`, pero son vistas provisionales: **no envían, guardan ni reservan nada**.
 - Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian, robot sin recuadro y animaciones de robot/mano; la mano se oculta por debajo de 640 px para dejar espacio al contenido.
+- Navegación con cristal oscuro adaptable y menú de industrias accesible por teclado. `AnimatedIcon` comparte seis movimientos CSS expresivos que se repiten durante hover/foco de teclado/pulsación; el enlace/botón padre usa `data-icon-trigger`. El mapa tipado de iconos por función está en `CategorySection`. No hay límite de movimiento por diseño: solo se desactivan los efectos si el usuario activa movimiento reducido en su sistema. Sin temporizadores ni dependencias nuevas; la barra tiene fondo de respaldo sin desenfoque.
 - Quedan pendientes formulario, persistencia independiente, administración de agentes/solicitudes, contenido definitivo y publicación segura.
 
 ## Mapa para continuar

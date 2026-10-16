@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Bot, MessageCircle, RefreshCw, Send, Sparkles, ArrowRight } from "lucide-react";
 import { recommendAgents } from "@/application/agents/recommend";
@@ -25,7 +25,7 @@ const suggestions = [
 const WELCOME: ChatMessage = {
   id: 0,
   role: "assistant",
-  text: "¡Hola! Soy el asistente de exploración de AGENTES.IA. Puedo ayudarte a encontrar agentes en nuestro catálogo de demo.\n\nDescríbeme tu necesidad en pocas palabras, por ejemplo:\n• \"Necesito responder consultas por WhatsApp\"\n• \"Quiero automatizar las ventas\"\n• \"Busco un agente para analizar datos\"\n\n⚠️ Esto es una simulación local: no utilizo modelos de IA, no guardo tu información ni envío datos a ningún servicio externo.",
+  text: "¡Hola! Soy el asesor de AGENTES.IA. Te ayudo a explorar nuestro catálogo de prueba y entender qué agente podría encajar en tu negocio.\n\n¿Qué tarea quieres mejorar y qué herramientas usas actualmente?\n\nLas capacidades e integraciones mostradas son ejemplos; todavía no ejecutamos agentes ni procesamos compras.",
 };
 
 function buildResponse(userText: string): Omit<ChatMessage, "id"> {
@@ -51,26 +51,70 @@ function buildResponse(userText: string): Omit<ChatMessage, "id"> {
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState("");
+  const [mode, setMode] = useState<"ai" | "local">("ai");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const pending = useRef<AbortController | null>(null);
   const nextId = useRef(1);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  useEffect(() => () => pending.current?.abort(), []);
 
   const scrollToBottom = useCallback(() => {
-    requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }));
+    requestAnimationFrame(() => bottomRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    }));
   }, []);
 
-  const sendMessage = useCallback((text: string) => {
+  const sendMessage = useCallback(async (text: string) => {
     const trimmed = text.trim();
-    if (!trimmed) return;
+    if (!trimmed || trimmed.length > 800 || pending.current) return;
 
     const userMsg: ChatMessage = { id: nextId.current++, role: "user", text: trimmed };
-    const response: ChatMessage = { id: nextId.current++, ...buildResponse(trimmed) };
-    setMessages(prev => [...prev, userMsg, response]);
+    setError(null);
+    setMessages(prev => [...prev, userMsg]);
     setInput("");
     scrollToBottom();
-  }, [scrollToBottom]);
+    if (mode === "local") {
+      setMessages(prev => [...prev, { id: nextId.current++, ...buildResponse(trimmed) }]);
+      return;
+    }
+    const controller = new AbortController();
+    pending.current = controller;
+    setSending(true);
+    try {
+      const response = await fetch("/api/advisor/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({ messages: [...messages.filter(m => m.id !== 0), userMsg].slice(-8)
+          .map(m => ({ role: m.role, content: m.text })) }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "El asesor no está disponible.");
+      if (pending.current !== controller) return;
+      setMessages(prev => [...prev, { id: nextId.current++, role: "assistant", text: data.text,
+        agents: (data.agentSlugs as string[]).flatMap(slug => agents.find(a => a.slug === slug) ?? []),
+      }]);
+    } catch (cause) {
+      if (controller.signal.aborted || pending.current !== controller) return;
+      setError(cause instanceof Error && cause.message !== "Failed to fetch" ? cause.message : "No se pudo conectar con el asesor. Intenta nuevamente.");
+      setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+      setInput(trimmed);
+    } finally {
+      if (pending.current === controller) {
+        pending.current = null;
+        setSending(false);
+        scrollToBottom();
+      }
+    }
+  }, [messages, mode, scrollToBottom]);
 
   const reset = useCallback(() => {
+    pending.current?.abort();
+    pending.current = null;
+    setSending(false);
+    setError(null);
     setMessages([WELCOME]);
     nextId.current = 1;
     setInput("");
@@ -83,13 +127,21 @@ export default function ChatPage() {
       <div className="mb-6 text-center">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#42C7E8]/25 bg-[#42C7E8]/5 px-3 py-1.5 text-xs font-medium text-[#42C7E8]">
           <Sparkles size={14} aria-hidden="true" />
-          Asistente de exploración SIMULADO
+          {mode === "ai" ? "Asesor de agentes · IA" : "Exploración · Simulación local"}
         </div>
         <h1 className="text-2xl font-bold text-[#EAF2F8] sm:text-3xl">Chat guiado</h1>
         <p className="mt-2 text-sm text-[#91A7BC]">
           Describe tu necesidad y te recomiendo agentes del catálogo de demo.
-          Sin IA real, sin almacenamiento, sin envío de datos.
+          {mode === "ai" ? "Tus mensajes y el catálogo se envían a OpenRouter y al proveedor del modelo. No compartas datos sensibles."
+            : "Este modo usa reglas locales, sin IA ni envío de mensajes a servicios externos."}
         </p>
+        <div className="mt-4 inline-flex gap-2" role="group" aria-label="Modo del asesor">
+          {(["ai", "local"] as const).map(value => <button key={value} type="button"
+            aria-pressed={mode === value} onClick={() => { if (value !== mode) { reset(); setMode(value); } }}
+            className="min-h-11 rounded-full border border-[#1a3353] px-4 text-sm text-[#91A7BC] aria-pressed:border-[#42C7E8] aria-pressed:text-[#42C7E8]">
+            {value === "ai" ? "Asesor IA" : "Demo local"}
+          </button>)}
+        </div>
       </div>
 
       {/* Suggestions */}
@@ -99,7 +151,8 @@ export default function ChatPage() {
             key={s.label}
             type="button"
             onClick={() => sendMessage(s.text)}
-            className="rounded-full border border-[#287FF0]/30 bg-[#0B1D34] px-4 py-2 text-xs font-semibold text-[#42C7E8] transition-colors hover:border-[#42C7E8] hover:bg-[#123352]"
+            disabled={sending}
+            className="rounded-full border border-[#287FF0]/30 bg-[#0B1D34] px-4 py-2 text-xs font-semibold text-[#42C7E8] transition-colors hover:border-[#42C7E8] hover:bg-[#123352] disabled:opacity-40"
           >
             {s.label}
           </button>
@@ -168,6 +221,8 @@ export default function ChatPage() {
         ))}
         <div ref={bottomRef} />
       </div>
+      {sending && <p role="status" className="mt-3 text-sm text-[#42C7E8]">El asesor está preparando una respuesta…</p>}
+      {error && <p role="alert" className="mt-3 rounded-xl border border-amber-400/30 p-3 text-sm text-amber-200">{error}</p>}
 
       {/* Input */}
       <form
@@ -180,13 +235,14 @@ export default function ChatPage() {
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="Describe tu necesidad..."
-          maxLength={200}
+          maxLength={800}
+          disabled={sending}
           aria-label="Mensaje al asistente"
-          className="flex-1 rounded-xl border border-[#1a3353] bg-[#05080C] px-4 py-3 text-sm text-[#EAF2F8] placeholder-[#91A7BC] outline-none transition-colors focus:border-[#42C7E8]"
+          className="min-w-0 flex-1 rounded-xl border border-[#1a3353] bg-[#05080C] px-4 py-3 text-sm text-[#EAF2F8] placeholder-[#91A7BC] outline-none transition-colors focus:border-[#42C7E8]"
         />
         <button
           type="submit"
-          disabled={!input.trim()}
+          disabled={sending || !input.trim()}
           aria-label="Enviar mensaje"
           className="flex size-11 items-center justify-center rounded-xl bg-[#287FF0] text-white transition-colors hover:bg-[#216bd0] disabled:opacity-40"
         >
@@ -203,7 +259,8 @@ export default function ChatPage() {
       </form>
 
       <p className="mt-4 text-center text-xs text-[#91A7BC]">
-        Simulación local · Sin modelos de IA ni almacenamiento · Los agentes mostrados son ejemplos de demo
+        {mode === "ai" ? "IA real sobre un catálogo de prueba · Puede equivocarse · Historial solo en esta pestaña; el proveedor aplica sus políticas de datos"
+          : "Simulación local · Sin modelos de IA ni almacenamiento · Los agentes mostrados son ejemplos de demo"}
       </p>
     </div>
   );

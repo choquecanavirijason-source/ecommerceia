@@ -6,6 +6,9 @@ services:
       context: ./client
     ports:
       - "127.0.0.1:${DEMO_PORT:-3001}:3000"
+    env_file:
+      - path: ./client/.env.openrouter.local
+        required: false
     environment:
       NODE_ENV: development
       NEXT_TELEMETRY_DISABLED: "1"

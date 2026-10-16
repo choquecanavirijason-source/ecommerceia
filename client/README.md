@@ -16,7 +16,7 @@ Para ejecutar esta demo en Docker, seguir [la guía de la raíz](../README.md). 
 
 1. Trabajar dentro de `client`. Usar las dependencias instaladas; en un equipo nuevo, `npm ci` con el lockfile existente.
 2. Ejecutar `npm run dev` y abrir la URL indicada por Next. Reutilizar el servidor si ya está iniciado.
-3. Limitar el recorrido a `/`, `/agentes`, `/agentes/<slug>`, `/solicitar-demo` y `/solicitar-cotizacion`.
+3. Limitar el recorrido a `/`, `/agentes`, `/agentes/<slug>`, `/chat`, `/solicitar-demo` y `/solicitar-cotizacion`. Para el asesor IA, usar la configuración Docker de la guía de raíz; no reutilizar variables del ecommerce.
 4. Consultar el [plan vigente](../docs/plans/tienda-agentes.plan.md) antes de avanzar. Para agentes de IA, leer también [AGENTS.md](AGENTS.md).
 
 No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de Unsplash y las fuentes externas pueden requerir internet. Los assets del robot están en `public/assets`.
@@ -30,6 +30,7 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 - Los filtros viajan en la URL (`q`, `categoria`, `industria`, `integracion`, `autonomia`, `precio`, `coleccion`, `orden`, `pagina`). La búsqueda se aplica con Buscar/Enter. Precios e integraciones son ilustrativos: no hay conexiones, ejecución, rankings de uso ni cobros reales.
 - Carrusel en bucle, avance cada 5 segundos, pausa manual/hover/foco/arrastre y respeto de movimiento reducido. Con pocas tarjetas, Embla puede desactivar el bucle; no se duplican datos para rellenarlo.
 - Las páginas de demo/cotización conservan `?agente=<slug>`, pero son vistas provisionales: **no envían, guardan ni reservan nada**.
+- `/chat`: asesor IA con OpenRouter o simulación local. `POST /api/advisor/` usa los mismos fixtures públicos como contexto, sin embeddings ni base de datos. Límites: 8 mensajes de contexto, entradas de 800 caracteres, 600 tokens de respuesta, 10 consultas/minuto por proceso, 2 simultáneas y timeout de 25 s, sin reintentos automáticos. Historial solo en memoria del navegador; en modo IA se envían mensajes al proveedor, sujeto a sus políticas. Los slugs de las fichas se validan contra el catálogo; el texto del modelo puede equivocarse.
 - Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian, robot sin recuadro y animaciones de robot/mano; la mano se oculta por debajo de 640 px para dejar espacio al contenido.
 - Navegación con cristal oscuro adaptable y menú de industrias accesible por teclado. `AnimatedIcon` comparte seis movimientos CSS expresivos que se repiten durante hover/foco de teclado/pulsación; el enlace/botón padre usa `data-icon-trigger`. El mapa tipado de iconos por función está en `CategorySection`. No hay límite de movimiento por diseño: solo se desactivan los efectos si el usuario activa movimiento reducido en su sistema. Sin temporizadores ni dependencias nuevas; la barra tiene fondo de respaldo sin desenfoque.
 - Quedan pendientes formulario, persistencia independiente, administración de agentes/solicitudes, contenido definitivo y publicación segura.
@@ -45,7 +46,7 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 | Soluciones agrupadas por industria | `application/agents/solutions.ts` |
 | Rutas aisladas de la demo (`/`, `/agentes`, `/chat`, solicitudes) | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
 | Navegación, menú de soluciones, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/organisms/SolutionsMenu.tsx`, `presentation/atoms/AgentLogo.tsx` |
-| Chat guiado simulado | `app/chat/page.tsx` |
+| Asesor IA y modo local | `app/chat/page.tsx`, `app/api/advisor/route.ts` (prompt, límites y conexión solo servidor) |
 | Portada | `presentation/templates/HomeTemplate.tsx`, `presentation/organisms/HeroSection.tsx`, `FeaturedAgentsSection.tsx` |
 | Efectos interactivos y animación | `presentation/atoms/Magnet.tsx`, `presentation/atoms/AnimatedText.tsx` |
 | Marquee, manifiesto y escenarios sticky | `presentation/organisms/MarqueeSection.tsx`, `presentation/organisms/ManifestoSection.tsx`, `presentation/organisms/StickyScenarios.tsx` |

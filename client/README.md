@@ -30,7 +30,8 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 - Los filtros viajan en la URL (`q`, `categoria`, `industria`, `integracion`, `autonomia`, `precio`, `coleccion`, `orden`, `pagina`). La búsqueda se aplica con Buscar/Enter. Precios e integraciones son ilustrativos: no hay conexiones, ejecución, rankings de uso ni cobros reales.
 - Carrusel en bucle, avance cada 5 segundos, pausa manual/hover/foco/arrastre y respeto de movimiento reducido. Con pocas tarjetas, Embla puede desactivar el bucle; no se duplican datos para rellenarlo.
 - Las páginas de demo/cotización conservan `?agente=<slug>`, pero son vistas provisionales: **no envían, guardan ni reservan nada**.
-- Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian y robot sin recuadro. En portada, GSAP fija el hero mientras cambia los textos y sincroniza los fotogramas del video con el scroll; respeta movimiento reducido.
+- Logo provisional `AGENTES.IA`. Mantener paleta oscura/azul/cian, robot sin recuadro y animaciones de robot/mano; la mano se oculta por debajo de 640 px para dejar espacio al contenido.
+- Navegación con cristal oscuro adaptable y menú de industrias accesible por teclado. `AnimatedIcon` comparte seis movimientos CSS expresivos que se repiten durante hover/foco de teclado/pulsación; el enlace/botón padre usa `data-icon-trigger`. El mapa tipado de iconos por función está en `CategorySection`. No hay límite de movimiento por diseño: solo se desactivan los efectos si el usuario activa movimiento reducido en su sistema. Sin temporizadores ni dependencias nuevas; la barra tiene fondo de respaldo sin desenfoque.
 - Quedan pendientes formulario, persistencia independiente, administración de agentes/solicitudes, contenido definitivo y publicación segura.
 
 ## Mapa para continuar
@@ -40,9 +41,16 @@ No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de
 | Contrato de lectura | `domain/entities/Agent.ts` |
 | Fixtures, colecciones y contadores locales | `demo/agents.ts` |
 | Búsqueda, filtros, URL y paginación sin dependencia de fixtures | `application/agents/discovery.ts` |
-| Rutas aisladas de la demo | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
-| Navegación, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/atoms/AgentLogo.tsx` |
+| Recomendación local para chat guiado | `application/agents/recommend.ts` |
+| Soluciones agrupadas por industria | `application/agents/solutions.ts` |
+| Rutas aisladas de la demo (`/`, `/agentes`, `/chat`, solicitudes) | `demo/routes.ts`, `app/AppShell.tsx`, `app/providers.tsx` |
+| Navegación, menú de soluciones, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/organisms/SolutionsMenu.tsx`, `presentation/atoms/AgentLogo.tsx` |
+| Chat guiado simulado | `app/chat/page.tsx` |
 | Portada | `presentation/templates/HomeTemplate.tsx`, `presentation/organisms/HeroSection.tsx`, `FeaturedAgentsSection.tsx` |
+| Efectos interactivos y animación | `presentation/atoms/Magnet.tsx`, `presentation/atoms/AnimatedText.tsx` |
+| Marquee, manifiesto y escenarios sticky | `presentation/organisms/MarqueeSection.tsx`, `presentation/organisms/ManifestoSection.tsx`, `presentation/organisms/StickyScenarios.tsx` |
+| Capacidades y FAQ accesible | `presentation/organisms/CapabilitiesSection.tsx`, `presentation/organisms/FaqSection.tsx` |
+| Próximos pasos útiles | `presentation/organisms/PromoBannerGrid.tsx` |
 | Catálogo y tarjetas | `presentation/organisms/AgentCatalogue.tsx`, `AgentCarousel.tsx`, `presentation/molecules/AgentCard.tsx` |
 | Movimiento y limpieza de eventos | `presentation/hooks/useCarouselAutoplay.ts`, `presentation/atoms/carousel.tsx` |
 | Fichas y selección de solicitudes | `app/agentes/[slug]/page.tsx`, `presentation/organisms/InquiryPreview.tsx` |
@@ -54,7 +62,7 @@ Las tarjetas y el carrusel reciben `Agent` por props y no importan fixtures. Sus
 Desde `client`, sin backend:
 
 ```sh
-npm test -- src/application/agents/discovery.test.ts src/demo/agents.test.ts --maxWorkers=1
+npm test -- src/application/agents/ src/demo/agents.test.ts src/app/demo-isolation.test.tsx
 npx tsc --noEmit --incremental false
 ```
 

@@ -17,13 +17,16 @@ El aislamiento cubre solo `/`, `/agentes`, sus fichas y las vistas de solicitud.
 | Etapa 1: descubrimiento | Implementada con fixtures: búsqueda de múltiples palabras, filtros combinables, URL compartible, orden por relevancia/nombre y seis tarjetas por página |
 | Datos | Diez agentes; slugs explícitos, etiquetas, industria, integraciones, autonomía y modalidad de precio. Todos los atributos comerciales son ejemplos |
 | Colecciones | Cuatro selecciones editoriales por caso de uso, visibles en portada y catálogo; sin popularidad, ratings o estadísticas inventadas |
-| Portada | Hero con textos en slider fijado al scroll y video sincronizado; carrusel de hasta 12 agentes por categoría y enlace al catálogo filtrado |
+| Navegación y soluciones | Menú "Soluciones" derivado de fixtures por industria, con iconos, recuento, cierre con Escape y adaptación móvil vertical |
+| Chat guiado | Ruta `/chat` simulada con recomendaciones basadas en necesidades cotidianas sobre el catálogo local; sin modelos, llamadas externas ni persistencia |
+| Portada | Hero e iluminación mejorados con efecto magnético en robot y botón CTA; Marquee bidireccional de integraciones y capacidades acelerado por hardware; Manifiesto con 4 elementos ciber flotantes y revelación de texto en scroll (`AnimatedText`); 3 escenarios demostrativos en tarjetas apilables fijas (`StickyScenarios`); capacidades; banners de próximos pasos útiles y FAQ accesible |
 | Carrusel | Bucle cuando hay suficientes tarjetas, avance cada 5 s; pausa manual/hover/foco/arrastre, pestaña oculta y movimiento reducido |
 | Fichas y solicitudes | Fichas por slug. Las vistas de demo/cotización conservan el agente seleccionado, sin formulario real, envío ni almacenamiento |
+| Aislamiento de rutas | Cubre `/`, `/agentes`, fichas, `/chat`, `/solicitar-demo` y `/solicitar-cotizacion` frente al ecommerce |
 | Backend | No implementado para el marketplace; backend heredado fuera del alcance |
 | Docker | Frontend de desarrollo independiente, puerto local 3001, usuario no root y healthcheck; sin servicios de API o BD |
 
-La lógica de descubrimiento en `application/agents/discovery.ts` recibe datos y colecciones por argumentos. Las tarjetas/carrusel reciben agentes por props. No se añadieron dependencias ni documentos nuevos para esta etapa.
+La lógica de descubrimiento y recomendación (`application/agents/`) recibe datos y colecciones por argumentos. Las tarjetas/carrusel reciben agentes por props. No se añadieron dependencias ni documentos nuevos para esta etapa.
 
 ## Próximas etapas
 
@@ -40,4 +43,4 @@ Reutilizar dependencias y componentes; TDD puntual para lógica nueva, revisión
 
 ## Validación de esta etapa
 
-Ocho pruebas acotadas aprobadas (cinco nuevas de descubrimiento y tres existentes de fixtures), con fallo inicial antes de implementar. TypeScript sin emisión aprobado. Navegación comprobada: búsqueda sin tildes, vuelta atrás, filtros combinados desde URL y segunda página. Catálogo sin desbordamiento horizontal en 320, 768 y 1280 px. Docker reconstruido y frontend saludable en `http://localhost:3001`; no se ejecutó el build de producción ni se accedió al backend/BD del cliente.
+Dieciséis pruebas acotadas aprobadas (cinco de descubrimiento, tres de fixtures, tres de recomendación, tres de soluciones por industria y dos de aislamiento de rutas demo en AppShell), con fallo inicial antes de implementar. TypeScript sin emisión aprobado sin errores tanto en host como en Docker (`npx tsc --noEmit --incremental false`). Verificación visual y funcional en navegador: Hero interactivo, partículas deterministas, menú de soluciones por industria, alternancia de tres escenarios de demo, acordeón de FAQ accesible y chat guiado simulado con sugerencias rápidas, enlaces a catálogo filtrado y solicitudes de demo. Docker frontend saludable en `http://localhost:3001`; no se ejecutó el build de producción ni se accedió al backend/BD del cliente.

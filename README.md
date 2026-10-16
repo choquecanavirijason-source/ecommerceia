@@ -21,6 +21,27 @@ npm ci
 npm run dev
 ```
 
+El Compose incluye solo Next.js: usuario sin privilegios, puerto ligado a loopback y healthcheck. Opcionalmente carga **solo** `client/.env.openrouter.local` para el asesor; no carga archivos de configuración del ecommerce. Las URLs heredadas de API se sustituyen por un destino local inhabilitado. Cambiar `DEMO_PORT` si 3001 está ocupado. Para incorporar cambios de código, repetir `docker compose up --build -d --wait`; las capas de dependencias se reutilizan mientras el lockfile no cambie.
+
+### Activar el asesor con OpenRouter
+
+Copiar una sola vez la plantilla en PowerShell si el archivo local todavía no existe:
+
+```powershell
+Copy-Item client/.env.openrouter.example client/.env.openrouter.local
+```
+
+Editar `client/.env.openrouter.local` y completar `OPENROUTER_API_KEY`. No usar `export` en ese archivo ni el prefijo `NEXT_PUBLIC_`. Está ignorado por Git y excluido de la imagen; Compose inyecta las variables al arrancar. No compartirlo ni mostrar `docker compose config` con secretos en pantalla.
+
+```sh
+docker compose up --build -d --wait frontend
+```
+
+Abrir http://localhost:3001/chat/ y elegir **Asesor IA**. Modelo inicial: `openai/gpt-4.1-nano`; `OPENROUTER_MODEL` permite otro modelo con salida JSON por esquema. Repetir el comando al cambiar variables. Sin clave, **Demo local** funciona sin enviar mensajes. Las pruebas simulan OpenRouter y no consumen créditos.
+
+Configurar un presupuesto de prueba para la clave en OpenRouter. El límite en memoria se reinicia con el proceso y no sustituye ese presupuesto. El endpoint no tiene autenticación: mantenerlo en localhost; antes de publicarlo requiere autenticación y cuotas persistentes. El asesor necesita servidor Next.js y no funciona mediante exportación HTML estática.
+
+Esta imagen usa `next dev`: **no es un despliegue de producción**. No ejecuta el build/export heredado ni inicia Laravel o una base. `server/Dockerfile` sigue siendo legado: usa `artisan serve`, carece de una arquitectura de producción validada y no forma parte de este Compose. Se añadió `.dockerignore` al backend para excluir credenciales y datos del contexto, sin construir ni ejecutar esa imagen.
 El frontend queda en http://localhost:3000 si se ejecuta localmente.
 
 ## Contexto para continuar

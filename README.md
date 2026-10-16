@@ -4,18 +4,21 @@ Demo de catálogo con datos de prueba, construida sobre un repositorio de ecomme
 
 **La base de datos del ecommerce pertenece a otro cliente. No consultarla, modificarla ni ejecutar migraciones/seeders.** El marketplace aún necesita una base independiente. Las solicitudes de demo/cotización son vistas provisionales y no guardan ni envían datos.
 
-## Ejecutar con Docker (desarrollo)
+## Ejecutar en desarrollo
 
-Requiere Docker Desktop con motor Linux iniciado. Desde esta carpeta:
+Iniciar frontend y Laravel con Docker desde esta carpeta:
 
 ```sh
-docker compose up --build -d --wait
+docker compose up --build
 ```
 
-Abrir http://localhost:3001. Para detener únicamente esta demo:
+El frontend queda en http://localhost:3001 y Laravel en http://localhost:8000. Compose no inicia una base de datos. El contenedor del frontend ejecuta `next dev`, así que este Compose es para desarrollo, no una imagen de producción.
+
+Para ejecutar el frontend directamente en lugar del contenedor, usar desde `client`:
 
 ```sh
-docker compose down
+npm ci
+npm run dev
 ```
 
 El Compose incluye solo Next.js: usuario sin privilegios, puerto ligado a loopback y healthcheck. Opcionalmente carga **solo** `client/.env.openrouter.local` para el asesor; no carga archivos de configuración del ecommerce. Las URLs heredadas de API se sustituyen por un destino local inhabilitado. Cambiar `DEMO_PORT` si 3001 está ocupado. Para incorporar cambios de código, repetir `docker compose up --build -d --wait`; las capas de dependencias se reutilizan mientras el lockfile no cambie.
@@ -39,6 +42,7 @@ Abrir http://localhost:3001/chat/ y elegir **Asesor IA**. Modelo inicial: `opena
 Configurar un presupuesto de prueba para la clave en OpenRouter. El límite en memoria se reinicia con el proceso y no sustituye ese presupuesto. El endpoint no tiene autenticación: mantenerlo en localhost; antes de publicarlo requiere autenticación y cuotas persistentes. El asesor necesita servidor Next.js y no funciona mediante exportación HTML estática.
 
 Esta imagen usa `next dev`: **no es un despliegue de producción**. No ejecuta el build/export heredado ni inicia Laravel o una base. `server/Dockerfile` sigue siendo legado: usa `artisan serve`, carece de una arquitectura de producción validada y no forma parte de este Compose. Se añadió `.dockerignore` al backend para excluir credenciales y datos del contexto, sin construir ni ejecutar esa imagen.
+El frontend queda en http://localhost:3000 si se ejecuta localmente.
 
 ## Contexto para continuar
 

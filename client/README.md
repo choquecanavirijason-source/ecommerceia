@@ -10,7 +10,7 @@ Los diez agentes aportados por el usuario viven en `src/demo/agents.ts`. Nombres
 
 El aislamiento actual cubre las rutas de la demo mediante `src/demo/routes.ts`, `AppShell` y `Providers`: omiten navegación, sesión y sincronización del ecommerce. **No es un bloqueo global:** las rutas antiguas y el backend continúan en el repositorio. No usarlos al presentar o comprobar la demo.
 
-Para ejecutar esta demo en Docker, seguir [la guía de la raíz](../README.md). El contenedor es de desarrollo y no incluye backend ni base de datos.
+Para arrancar el frontend localmente, abrir una terminal en `client` y ejecutar `npm ci` (primera vez) y luego `npm run dev`. No requiere Docker, backend ni base de datos.
 
 ## Retomar y ejecutar
 

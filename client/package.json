@@ -1,5 +1,5 @@
 {
-  "name": "unocompras-storefront",
+  "name": "agentes-ia-marketplace",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -52,6 +52,7 @@
     "cmdk": "1.1.1",
     "date-fns": "3.6.0",
     "embla-carousel-react": "8.6.0",
+    "gsap": "^3.15.0",
     "input-otp": "1.4.2",
     "lucide-react": "0.487.0",
     "next": "16.3.0",

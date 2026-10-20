@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { RotateCcw, Sparkles } from "lucide-react";
 import { usePrefersReducedMotion } from "@/presentation/hooks/usePrefersReducedMotion";
 import type { AetherSceneHandle } from "@/presentation/three/aetherScene";
 
@@ -13,6 +12,13 @@ type StageStatus = "loading" | "ready" | "error";
  * recto. Se difuminan los laterales y, con más recorrido, la parte inferior,
  * donde el torso continúa fuera de cuadro. El borde superior queda intacto a
  * propósito: ahí está la coronilla del casco y un degradado se la come.
+ *
+ * Que arriba no haya degradado obliga a que nada pinte en esa franja, o se
+ * corta en recto. El canvas no lo hace (sus primeras filas salen con alfa 0),
+ * pero el `drop-shadow` cian que llevaba antes sí: nacía del casco y se
+ * desbordaba por arriba, donde la máscara lo cercenaba dejando la línea
+ * horizontal que se veía contra el fondo. Por eso ya no lleva filtro: el halo
+ * lo pone la iluminación de la escena, que no se sale del cuadro.
  */
 const EDGE_FADE = [
   "linear-gradient(to bottom, black 0%, black 68%, transparent 100%)",
@@ -43,7 +49,6 @@ export function AetherHeroStage({ className = "" }: AetherHeroStageProps) {
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   const [status, setStatus] = useState<StageStatus>("loading");
-  const [effectsEnabled, setEffectsEnabled] = useState(true);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -97,7 +102,7 @@ export function AetherHeroStage({ className = "" }: AetherHeroStageProps) {
           onGlitch: scene.setGlitch,
         });
 
-        scene.setEffectsEnabled(effectsEnabled);
+        scene.setEffectsEnabled(true);
         scene.start();
         timelineRef.current.play(0);
       } catch (error) {
@@ -118,14 +123,7 @@ export function AetherHeroStage({ className = "" }: AetherHeroStageProps) {
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-    // `effectsEnabled` se propaga con su propio efecto: remontar la escena al
-    // togglear los efectos descargaría el GLB otra vez.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReducedMotion]);
-
-  useEffect(() => {
-    sceneRef.current?.setEffectsEnabled(effectsEnabled && !prefersReducedMotion);
-  }, [effectsEnabled, prefersReducedMotion]);
 
   // El robot sigue al cursor por toda la portada, no sólo sobre el canvas: la
   // referencia es el centro del contenedor y el alcance, algo más ancho. El
@@ -171,19 +169,6 @@ export function AetherHeroStage({ className = "" }: AetherHeroStageProps) {
     };
   }, [prefersReducedMotion]);
 
-  const handleReplay = useCallback(() => {
-    const scene = sceneRef.current;
-    const timeline = timelineRef.current;
-    if (!scene || !timeline) return;
-    // Sin esto, el movimiento secundario arrancaría leyendo el historial de la
-    // reproducción anterior y la primera décima de segundo daría un salto.
-    scene.rig.reset();
-    scene.start();
-    timeline.restart(true);
-  }, []);
-
-  const showControls = status === "ready" && !prefersReducedMotion;
-
   if (status === "error") {
     return <HeroPoster className={className} />;
   }
@@ -192,37 +177,12 @@ export function AetherHeroStage({ className = "" }: AetherHeroStageProps) {
     <div className={`relative ${className}`}>
       <div
         ref={containerRef}
-        className="relative h-full w-full [&>canvas]:drop-shadow-[0_0_45px_rgba(66,199,232,0.22)]"
+        className="relative h-full w-full"
         style={EDGE_MASK}
         role="img"
         aria-label="Robot AETHER-02 en primer plano que advierte a quien lo observa y gira hacia la cámara"
       />
 
-      {showControls && (
-        <div className="absolute bottom-0 left-0 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleReplay}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#42C7E8]/25 bg-[#05080C]/90 px-3 py-1.5 text-[11px] font-medium text-[#C3D3E2] shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-[#42C7E8]/60 hover:text-[#EAF2F8]"
-          >
-            <RotateCcw size={12} aria-hidden="true" />
-            Repetir
-          </button>
-          <button
-            type="button"
-            onClick={() => setEffectsEnabled((previous) => !previous)}
-            aria-pressed={effectsEnabled}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium shadow-lg shadow-black/40 backdrop-blur-md transition-colors ${
-              effectsEnabled
-                ? "border-[#42C7E8]/60 bg-[#05080C]/90 text-[#42C7E8]"
-                : "border-[#1a3353] bg-[#05080C]/90 text-[#91A7BC] hover:text-[#EAF2F8]"
-            }`}
-          >
-            <Sparkles size={12} aria-hidden="true" />
-            Efectos
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -9,6 +9,13 @@
  *
  * El canal alfa se preserva porque el canvas va sobre el degradado de la
  * sección: si el pase devolviera alfa 1 se vería una caja negra.
+ *
+ * El charco va deliberadamente flojo. Con la intensidad anterior llegaba a un
+ * alfa de ~8 % en reposo y ~22 % con la cabeza lanzada; medido ahora sobre las
+ * zonas del canvas sin robot se queda en ~1 %. No era la causa de la
+ * "división" que se veía contra el fondo —esa era el `drop-shadow` del canvas,
+ * ya retirado—, pero sí le restaba contraste al robot. Subirlo lo vuelve a
+ * velar.
  */
 
 import type { Color, IUniform } from "three";
@@ -108,7 +115,7 @@ export const PsychedelicShader = {
       float falloff = smoothstep( 0.48, 0.08, r );
       float ripple = mix( 0.5, 1.0, sin( r * 14.0 - uTime * 1.2 ) * 0.5 + 0.5 );
       float tint = smoothstep( -0.25, 0.25, dir.x );
-      float pool = falloff * ripple * ( 0.085 + uEnergy * 0.14 ) * ( 1.0 - alpha );
+      float pool = falloff * ripple * ( 0.028 + uEnergy * 0.05 ) * ( 1.0 - alpha );
 
       color += mix( uCyan, uMagenta, tint * 0.6 ) * pool;
       alpha = max( alpha, pool );

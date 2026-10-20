@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AetherHeroStage } from "./AetherHeroStage";
 
@@ -58,7 +57,7 @@ afterEach(() => {
 });
 
 describe("escena de la portada", () => {
-  it("reproduce el guión y ofrece los controles cuando se permite movimiento", async () => {
+  it("reproduce el guión con los efectos activos y sin controles a la vista", async () => {
     stubReducedMotion(false);
     render(<AetherHeroStage />);
 
@@ -66,8 +65,9 @@ describe("escena de la portada", () => {
 
     expect(scene.start).toHaveBeenCalled();
     expect(timeline.play).toHaveBeenCalledWith(0);
-    expect(await screen.findByRole("button", { name: /repetir/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /efectos/i })).toHaveAttribute("aria-pressed", "true");
+    expect(scene.setEffectsEnabled).toHaveBeenCalledWith(true);
+    // La portada no ofrece mandos: el robot se reproduce solo.
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("con movimiento reducido fija la pose, no crea la línea de tiempo ni muestra controles", async () => {
@@ -80,18 +80,7 @@ describe("escena de la portada", () => {
     expect(scene.setEffectsEnabled).toHaveBeenCalledWith(false);
     expect(factories.createAetherTimeline).not.toHaveBeenCalled();
     expect(scene.start).not.toHaveBeenCalled();
-    expect(screen.queryByRole("button", { name: /repetir/i })).not.toBeInTheDocument();
-  });
-
-  it("reinicia el rig antes de repetir, para no arrastrar el fotograma anterior", async () => {
-    stubReducedMotion(false);
-    render(<AetherHeroStage />);
-
-    await waitFor(() => expect(factories.createAetherTimeline).toHaveBeenCalled());
-    await userEvent.click(screen.getByRole("button", { name: /repetir/i }));
-
-    expect(scene.rig.reset).toHaveBeenCalled();
-    expect(timeline.restart).toHaveBeenCalledWith(true);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("traslada el cursor a la escena como puntero normalizado", async () => {
@@ -168,7 +157,7 @@ describe("escena de la portada", () => {
     );
 
     expect(screen.getByAltText(/robot que representa a los agentes/i)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /repetir/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(error).toHaveBeenCalled();
     error.mockRestore();
   });

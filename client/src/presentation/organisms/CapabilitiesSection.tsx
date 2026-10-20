@@ -1,4 +1,6 @@
 import { Bot, Zap, Shield, Globe, Clock, Users } from "lucide-react";
+import type { CSSProperties } from "react";
+import SpotlightCard from "@/presentation/atoms/SpotlightCard";
 
 const capabilities = [
   { icon: Bot, title: "Agentes especializados", desc: "Cada agente diseñado para un objetivo concreto: ventas, soporte, análisis y más." },
@@ -24,13 +26,29 @@ export function CapabilitiesSection() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {capabilities.map(cap => (
-            <div key={cap.title} className="group rounded-2xl border border-[#1a3353] bg-[#05080C] p-6 transition-all hover:border-[#42C7E8]/50 hover:shadow-[0_0_20px_rgba(66,199,232,0.1)]">
+            <SpotlightCard
+              key={cap.title}
+              className="group"
+              spotlightColor="#42C7E8"
+              spotlightSize={260}
+              intensity={0.18}
+              borderGlow={0.7}
+              style={{
+                // La superficie y el borde del tema oscuro que trae el
+                // componente (#111111) no son los de la demo: se sobreescriben
+                // por variable, que es como él los lee.
+                "--spotlight-card-surface": "#05080C",
+                "--spotlight-card-border": "#1a3353",
+                borderRadius: "1rem",
+                padding: "1.5rem",
+              } as CSSProperties}
+            >
               <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-[#287FF0]/15 text-[#42C7E8] transition-transform group-hover:scale-110">
                 <cap.icon size={24} aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-[#EAF2F8]">{cap.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[#91A7BC]">{cap.desc}</p>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
         <p className="mt-6 text-center text-xs text-[#91A7BC]">

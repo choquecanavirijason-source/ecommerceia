@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Sparkles, MessageCircle } from "lucide-react";
 import { Magnet } from "@/presentation/atoms/Magnet";
+import { AetherHeroStage } from "@/presentation/organisms/AetherHeroStage";
 
 export function HeroSection() {
   return (
@@ -69,26 +70,9 @@ export function HeroSection() {
           </p>
         </div>
         <div className="relative mx-auto w-full max-w-[460px] lg:max-w-none">
-          <Magnet strength={4} padding={120} className="w-full">
-            <div className="relative aspect-[5/4] sm:aspect-square">
-              <div
-                className="absolute inset-0 motion-safe:animate-[pulse_4s_ease-in-out_infinite]"
-                style={{
-                  maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
-                }}
-              >
-                <Image
-                  src="/assets/robot-demo.jpg"
-                  alt="Robot que representa a los agentes de inteligencia artificial"
-                  fill
-                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 460px, 45vw"
-                  className="object-contain object-bottom mix-blend-lighten drop-shadow-[0_0_40px_rgba(40,127,240,0.25)]"
-                  priority
-                />
-              </div>
-            </div>
-          </Magnet>
+          {/* El robot ya tiene su propio movimiento: la cámara queda fija y no
+              se envuelve en Magnet para no competir con el encuadre. */}
+          <AetherHeroStage className="aspect-[5/4] sm:aspect-square" />
         </div>
       </div>
     </section>

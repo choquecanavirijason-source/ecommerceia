@@ -65,3 +65,48 @@
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
+
+/* Las barras y segmentos crecen al entrar en pantalla, en vez de aparecer ya
+   dibujados: es lo que hace que el gráfico se vea "en marcha" sin ratón. */
+.crece {
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+
+.creceVertical {
+  transform-origin: center bottom;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .crece {
+    animation: crece 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--retraso, 0s);
+  }
+
+  .creceVertical {
+    animation: creceVertical 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--retraso, 0s);
+  }
+
+  /* Barrido que recorre el gráfico y vuelve: movimiento de fondo constante. */
+  .barrido {
+    animation: barrido 5.5s ease-in-out infinite;
+  }
+}
+
+@keyframes crece {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes creceVertical {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes barrido {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  15% { opacity: 0.5; }
+  85% { opacity: 0.5; }
+  50% { transform: translateX(var(--recorrido, 320px)); }
+}

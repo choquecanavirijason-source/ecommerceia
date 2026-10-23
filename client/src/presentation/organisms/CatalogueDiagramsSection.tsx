@@ -1,23 +1,23 @@
 import { DiagramCard } from "@/presentation/atoms/DiagramCard";
 import { IntegrationsDiagram } from "@/presentation/molecules/IntegrationsDiagram";
 import { AutonomyDiagram } from "@/presentation/molecules/AutonomyDiagram";
-import { CoverageDiagram } from "@/presentation/molecules/CoverageDiagram";
 import { RequestFlowDiagram } from "@/presentation/molecules/RequestFlowDiagram";
+import { CollectionsDiagram, type ColeccionResumen } from "@/presentation/molecules/CollectionsDiagram";
 
 /**
- * Panorama del catálogo en dos esquemas, para la portada.
+ * Cuatro esquemas que explican cómo encaja un agente, para la portada.
  *
- * Mismos componentes que la ficha, con datos distintos: aquí las herramientas
- * de todo el catálogo y las tres modalidades sin resaltar ninguna; en la ficha,
- * las del agente y su modalidad. Recibe las integraciones por props: la
- * plantilla es quien lee los fixtures.
+ * Los de integraciones y modalidades son los mismos componentes que usa la
+ * ficha, con otros datos: aquí las herramientas de todo el catálogo y las
+ * tres modalidades sin resaltar ninguna; allí, las del agente y su modalidad.
+ * Todo llega por props: la plantilla es quien lee los fixtures.
  */
 interface CatalogueDiagramsSectionProps {
   integrations: readonly string[];
-  categories: readonly { name: string; count: number }[];
+  colecciones: readonly ColeccionResumen[];
 }
 
-export function CatalogueDiagramsSection({ integrations, categories }: CatalogueDiagramsSectionProps) {
+export function CatalogueDiagramsSection({ integrations, colecciones }: CatalogueDiagramsSectionProps) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20" aria-labelledby="catalogue-diagrams-title">
       <div className="mb-10 text-center">
@@ -48,13 +48,6 @@ export function CatalogueDiagramsSection({ integrations, categories }: Catalogue
           <AutonomyDiagram />
         </DiagramCard>
 
-        <DiagramCard
-          title="Cubre diez funciones"
-          description="Cada punto es una función del catálogo y su tamaño sigue al número de agentes de ejemplo que hay en ella."
-          caption="esquema · categorías del catálogo"
-        >
-          <CoverageDiagram categories={categories} />
-        </DiagramCard>
 
         <DiagramCard
           title="Del catálogo a la solicitud"
@@ -63,6 +56,14 @@ export function CatalogueDiagramsSection({ integrations, categories }: Catalogue
         >
           <RequestFlowDiagram />
         </DiagramCard>
+        <DiagramCard
+          title="Agrupados por caso de uso"
+          description="Las colecciones del catálogo reúnen agentes por objetivo. Uno puede aparecer en más de una: al señalar una colección se encienden también sus repeticiones."
+          caption="esquema · colecciones del catálogo"
+        >
+          <CollectionsDiagram colecciones={colecciones} />
+        </DiagramCard>
+
       </div>
     </section>
   );

@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Sparkles, MessageCircle } from "lucide-react";
 import { Magnet } from "@/presentation/atoms/Magnet";
-import { AetherHeroStage } from "@/presentation/organisms/AetherHeroStage";
 
 export function HeroSection() {
   return (
@@ -24,23 +23,7 @@ export function HeroSection() {
           <p className="mt-6 max-w-lg text-base leading-relaxed text-[#91A7BC] sm:text-lg">
             Encuentra agentes de IA para ventas, atención al cliente y operaciones. Explora qué pueden aportar a tu equipo, a tu ritmo.
           </p>
-          <div className="mt-8 flex items-center gap-4">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none relative hidden size-28 shrink-0 sm:block motion-safe:animate-[bounce_3s_infinite]"
-            >
-              <Image
-                src="/assets/robot-hand.jpg"
-                alt=""
-                fill
-                sizes="112px"
-                className="object-cover mix-blend-screen"
-                style={{
-                  maskImage: "radial-gradient(circle, black 35%, transparent 72%)",
-                  WebkitMaskImage: "radial-gradient(circle, black 35%, transparent 72%)",
-                }}
-              />
-            </div>
+          <div className="mt-8">
             <div className="flex flex-wrap items-center gap-3">
               <Magnet strength={3.5} padding={50}>
                 <Link
@@ -69,10 +52,26 @@ export function HeroSection() {
             Exploración sin registro · Agentes propios · Asesoría a medida
           </p>
         </div>
-        <div className="relative mx-auto w-full max-w-[460px] lg:max-w-none">
-          {/* El robot ya tiene su propio movimiento: la cámara queda fija y no
-              se envuelve en Magnet para no competir con el encuadre. */}
-          <AetherHeroStage className="aspect-[5/4] sm:aspect-square" />
+        {/* La proporción es la del archivo (1316×1195). Con el contenedor
+            cuadrado, `object-contain` dejaba 40 px de hueco que `object-bottom`
+            empujaba arriba; así la imagen llena su caja y no sobra nada. */}
+        <div className="relative mx-auto aspect-[1316/1195] w-full max-w-[460px] lg:max-w-none">
+          {/* Charco de luz bajo el robot, para que no flote sobre la nada. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-[6%] left-1/2 h-[12%] w-[62%] -translate-x-1/2 rounded-[50%] bg-[#287FF0] opacity-35 blur-2xl motion-safe:animate-[robot-luz_7s_ease-in-out_infinite]"
+          />
+          {/* Imagen plana, no la escena 3D: `mix-blend-lighten` deja el robot
+              sin recuadro, que es la regla de la portada. `priority` porque es
+              lo más grande sobre la línea de flotación y marca el LCP. */}
+          <Image
+            src="/assets/robot-demo.jpg"
+            alt="Robot que representa a los agentes de inteligencia artificial"
+            fill
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 460px, 45vw"
+            className="object-contain mix-blend-lighten drop-shadow-[0_0_40px_rgba(40,127,240,0.25)] motion-safe:animate-[robot-flota_7s_ease-in-out_infinite]"
+            priority
+          />
         </div>
       </div>
     </section>

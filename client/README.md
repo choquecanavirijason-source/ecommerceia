@@ -21,9 +21,7 @@ Para arrancar el frontend localmente, abrir una terminal en `client` y ejecutar 
 
 No hace falta Laravel ni una base de datos para este recorrido. Las imágenes de Unsplash y las fuentes externas pueden requerir internet. Los assets del robot están en `public/assets`; el modelo 3D del hero, en `public/assets/models` junto a su licencia CC0.
 
-El robot de la portada es un GLB con rig de 18 huesos animado por código (three.js + GSAP). El guión de 12 s va en bucle, con una transición de 1,4 s que devuelve la pose al arranque para que no salte, y la cabeza sigue al cursor sumando hasta 12° de giro y 6° de cabeceo sobre la pose del guión (sólo en punteros con hover). three.js y GSAP se cargan con `import()` dentro del efecto, así que no entran en el bundle inicial. Con `prefers-reduced-motion: reduce` se dibuja un único fotograma en pose fija, sin línea de tiempo ni efectos, y si WebGL falla queda la imagen `robot-demo.jpg`.
-
-El GLB servido pesa **1,4 MB** (1,3 MB transferidos con gzip): viene con geometría Meshopt (`EXT_meshopt_compression`, decodificador registrado en `aetherScene.ts`) y texturas WebP, sin los 11 clips de animación que la pose procedural no usa. Conserva los 24.310 triángulos y el skin de 18 huesos del original. Para no competir con el LCP en móvil, la escena no se monta hasta que el contenedor se acerca al viewport, con un plazo máximo de 1,2 s por si el navegador no entrega el `IntersectionObserver` (una pestaña en segundo plano no lo hace). Hasta que aparece, el hueco queda vacío a propósito: enseñar el robot 2D antiguo y sustituirlo después se veía peor. El original y el script que reproduce la optimización están en [`assets-source/`](assets-source/README.md).
+El robot de la portada es la imagen `robot-demo.jpg`, en 2D, con una flotación lenta y un charco de luz que la acompaña; ambos bajo `motion-safe:`, así que con movimiento reducido se queda quieta. La escena 3D con el GLB `aether-02` se retiró a petición del cliente y su código se borró: está en el historial de git, en los commits `de584e4` y anteriores.
 
 **No ejecutar todavía `npm run build`, `npm run deploy:server` ni comandos de backend.** `src/infrastructure/build/buildParams.ts` conserva consultas a productos/categorías de la API heredada y un fallback de 2.000 productos. La exportación/despliegue debe aislarse antes de utilizarse para este marketplace. El deploy existente copia archivos a `server/public`.
 
@@ -52,7 +50,6 @@ El GLB servido pesa **1,4 MB** (1,3 MB transferidos con gzip): viene con geometr
 | Navegación, menú de soluciones, pie y logo temporal | `presentation/templates/AgentDemoShell.tsx`, `presentation/organisms/SolutionsMenu.tsx`, `presentation/atoms/AgentLogo.tsx` |
 | Asesor IA y modo local | `app/chat/page.tsx`, `app/api/advisor/route.ts` (prompt, límites y conexión solo servidor) |
 | Portada | `presentation/templates/HomeTemplate.tsx`, `presentation/organisms/HeroSection.tsx`, `FeaturedAgentsSection.tsx` |
-| Robot 3D del hero (primer plano animado) | `presentation/organisms/AetherHeroStage.tsx`, `presentation/three/` (`aetherScene.ts`, `aetherRig.ts`, `aetherPose.ts`, `aetherTimeline.ts`, `psychedelicShader.ts`) |
 | Efectos interactivos y animación | `presentation/atoms/Magnet.tsx`, `presentation/atoms/AnimatedText.tsx`, `presentation/hooks/usePrefersReducedMotion.ts` |
 | Marquee, manifiesto y escenarios sticky | `presentation/organisms/MarqueeSection.tsx`, `presentation/organisms/ManifestoSection.tsx`, `presentation/organisms/StickyScenarios.tsx` |
 | Capacidades y FAQ accesible | `presentation/organisms/CapabilitiesSection.tsx`, `presentation/organisms/FaqSection.tsx` |

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { agents, findAgent } from "@/demo/agents";
+import { AgentDiagrams } from "@/presentation/organisms/AgentDiagrams";
 
 export const dynamicParams = false;
 
@@ -37,5 +38,7 @@ export default async function AgentPage({ params }: { params: Promise<{ slug: st
         </div>
       </div>
     </div>
+
+    <AgentDiagrams agent={agent} />
   </section>;
 }

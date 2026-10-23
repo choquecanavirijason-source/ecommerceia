@@ -1,0 +1,67 @@
+/*
+ * Movimiento y respuesta al ratón de los esquemas del catálogo.
+ *
+ * Mismo criterio que `AnimatedIcon.module.css`: la animación se activa sólo
+ * con `no-preference`, nunca se desactiva después. Así, con movimiento
+ * reducido el esquema queda legible y quieto sin reglas que deshacer.
+ */
+
+/* Punto que recorre un conector. El trazado llega por `--ruta`, en línea,
+   porque cada conector tiene el suyo. Parado se queda a media curva, que es
+   una posición intencionada y no el arranque. */
+.travel {
+  offset-path: var(--ruta);
+  offset-distance: 45%;
+  offset-rotate: 0deg;
+}
+
+.dash {
+  stroke-dasharray: 3 4;
+}
+
+/* Atenuar y resaltar se hacen por opacidad desde el componente; aquí sólo se
+   suaviza el cambio para que señalar no dé un salto. El cursor avisa de que
+   el nodo responde. */
+.nodo {
+  cursor: default;
+  transition: opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.interactivo {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .travel {
+    animation: travel var(--dur, 2.6s) linear infinite;
+    animation-delay: var(--retraso, 0s);
+  }
+
+  .dash {
+    animation: dash 1.2s linear infinite;
+  }
+
+  .pulse {
+    animation: pulse 3.4s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nodo {
+    transition: none;
+  }
+}
+
+@keyframes travel {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
+}
+
+@keyframes dash {
+  to { stroke-dashoffset: -14; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

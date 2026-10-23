@@ -9,7 +9,11 @@ import { CapabilitiesSection } from "@/presentation/organisms/CapabilitiesSectio
 import { PromoBannerGrid } from "@/presentation/organisms/PromoBannerGrid";
 import { AgentCollections } from "@/presentation/organisms/AgentCollections";
 import { FaqSection } from "@/presentation/organisms/FaqSection";
-import { agentCollections } from "@/demo/agents";
+import { CatalogueDiagramsSection } from "@/presentation/organisms/CatalogueDiagramsSection";
+import { agentCategories, agentCollections, agents } from "@/demo/agents";
+
+/** Las herramientas distintas que nombra el catálogo, sin repetir. */
+const catalogueIntegrations = [...new Set(agents.flatMap(agent => agent.integrations))];
 
 export function HomeTemplate({
   activeCategory,
@@ -27,6 +31,7 @@ export function HomeTemplate({
       <FeaturedAgentsSection activeCategory={activeCategory} onCategoryChange={onCategoryChange} />
       <ManifestoSection />
       <StickyScenarios />
+      <CatalogueDiagramsSection integrations={catalogueIntegrations} categories={agentCategories} />
       <CapabilitiesSection />
       <div className="mx-auto max-w-7xl px-4 py-8">
         <AgentCollections collections={agentCollections} />

@@ -1,6 +1,6 @@
 # Plan vigente — marketplace de agentes
 
-Actualizado: 9 de octubre de 2026. Este es el único plan activo; [client/README.md](../../client/README.md) explica cómo retomar y ejecutar, y [client/AGENTS.md](../../client/AGENTS.md) contiene las instrucciones para agentes de IA.
+Actualizado: 16 de octubre de 2026. Este es el único plan activo; [client/README.md](../../client/README.md) explica cómo retomar y ejecutar, y [client/AGENTS.md](../../client/AGENTS.md) contiene las instrucciones para agentes de IA.
 
 ## Alcance y límites
 
@@ -18,7 +18,7 @@ El aislamiento cubre solo `/`, `/agentes`, sus fichas y las vistas de solicitud.
 | Datos | Diez agentes; slugs explícitos, etiquetas, industria, integraciones, autonomía y modalidad de precio. Todos los atributos comerciales son ejemplos |
 | Colecciones | Cuatro selecciones editoriales por caso de uso, visibles en portada y catálogo; sin popularidad, ratings o estadísticas inventadas |
 | Navegación y soluciones | Menú "Soluciones" derivado de fixtures por industria, con iconos, recuento, cierre con Escape y adaptación móvil vertical |
-| Chat guiado | Ruta `/chat` simulada con recomendaciones basadas en necesidades cotidianas sobre el catálogo local; sin modelos, llamadas externas ni persistencia |
+| Chat guiado | `/chat` con asesor OpenRouter opcional y modo local. Contexto de fixtures, sin embeddings/BD. Clave solo en servidor Next, límites de consumo en memoria y respuestas estructuradas. Configuración en README raíz; el modelo puede equivocarse y el proveedor recibe mensajes |
 | Portada | Hero con robot 3D en primer plano: GLB `aether-02` (CC0, rig de 18 huesos) animado por código con three.js + GSAP en un guión de 12 s en bucle —se activa, busca, se extraña, detecta al visitante y se acerca—, con seguimiento del cursor sumado a la pose, con aberración cromática, rastros y glitches derivados de la velocidad real de la cabeza y pose fija bajo movimiento reducido; sin mandos a la vista (el guión va solo) y sin `drop-shadow` en el canvas, porque se desbordaba por encima del contenedor y la máscara lo cortaba en recto, dejando una línea visible contra el fondo; efecto magnético conservado en el botón CTA y la mano; Marquee bidireccional de integraciones y capacidades acelerado por hardware; Manifiesto con 4 elementos ciber flotantes y revelación de texto en scroll (`AnimatedText`); 3 escenarios demostrativos en tarjetas apilables fijas (`StickyScenarios`); capacidades; banners de próximos pasos útiles y FAQ accesible |
 | Carrusel | Bucle cuando hay suficientes tarjetas, avance cada 5 s; pausa manual/hover/foco/arrastre, pestaña oculta y movimiento reducido |
 | Fichas y solicitudes | Fichas por slug. Las vistas de demo/cotización conservan el agente seleccionado, sin formulario real, envío ni almacenamiento |
@@ -43,6 +43,6 @@ La portada muestra una selección y el catálogo monta una página a la vez. La 
 
 Reutilizar dependencias y componentes; TDD puntual para lógica nueva, revisión visual para CSS. Mantener README como entrada, este plan como estado y AGENTS como reglas. No generar informes por cambio, alterar staging ni borrar assets del usuario. La documentación de testing histórica no autoriza pruebas backend.
 
-## Validación de esta etapa
+## Validación previa a OpenRouter
 
 Dieciséis pruebas acotadas aprobadas (cinco de descubrimiento, tres de fixtures, tres de recomendación, tres de soluciones por industria y dos de aislamiento de rutas demo en AppShell), con fallo inicial antes de implementar. TypeScript sin emisión aprobado sin errores tanto en host como en Docker (`npx tsc --noEmit --incremental false`). Verificación visual y funcional en navegador: Hero interactivo, partículas deterministas, menú de soluciones por industria, alternancia de tres escenarios de demo, acordeón de FAQ accesible y chat guiado simulado con sugerencias rápidas, enlaces a catálogo filtrado y solicitudes de demo. Docker frontend saludable en `http://localhost:3001`; no se ejecutó el build de producción ni se accedió al backend/BD del cliente.

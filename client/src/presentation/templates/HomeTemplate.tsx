@@ -1,7 +1,6 @@
 import { HeroSection } from "@/presentation/organisms/HeroSection";
 import { FeaturesBar } from "@/presentation/organisms/FeaturesBar";
 import { MarqueeSection } from "@/presentation/organisms/MarqueeSection";
-import { CategorySection } from "@/presentation/organisms/CategorySection";
 import { FeaturedAgentsSection } from "@/presentation/organisms/FeaturedAgentsSection";
 import { ManifestoSection } from "@/presentation/organisms/ManifestoSection";
 import { StickyScenarios } from "@/presentation/organisms/StickyScenarios";
@@ -52,7 +51,6 @@ export function HomeTemplate({
       <HeroSection />
       <FeaturesBar />
       <MarqueeSection />
-      <CategorySection activeCategory={activeCategory} onCategoryChange={onCategoryChange} />
       <CatalogueDiagramsSection integrations={catalogueIntegrations} colecciones={resumenColecciones} />
       <CatalogueStatsSection repartos={repartosCatalogo} />
       <FeaturedAgentsSection activeCategory={activeCategory} onCategoryChange={onCategoryChange} />

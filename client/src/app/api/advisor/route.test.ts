@@ -44,6 +44,7 @@ it("usa el catálogo del servidor, limita tokens y solo devuelve fichas existent
   expect(url).toBe("https://openrouter.ai/api/v1/chat/completions");
   expect(sent.model).toBe("openai/gpt-4.1-nano");
   expect(sent.max_tokens).toBe(600);
+  expect(sent.provider).toEqual({ require_parameters: true });
   expect(sent.messages[0].content).toContain("support-genius");
   expect(sent.messages[0].content).toContain("datos de prueba");
   expect(JSON.stringify(sent)).not.toContain("test-secret");
@@ -66,4 +67,30 @@ it("no presenta una respuesta malformada del modelo como una recomendación vál
   upstream.mockResolvedValue(Response.json({ choices: [{ message: { content: "no es JSON" } }] }));
   const { POST } = await import("./route");
   expect((await POST(request(question))).status).toBe(502);
+});
+
+it("usa la URL, clave y modelo configurados y omite opciones propias de OpenRouter", async () => {
+  vi.stubEnv("ADVISOR_API_URL", "https://api.proveedor.example/v1/chat/completions");
+  vi.stubEnv("ADVISOR_API_KEY", "clave-de-pago");
+  vi.stubEnv("ADVISOR_MODEL", "modelo-de-pago");
+  upstream.mockResolvedValue(Response.json({ choices: [{ message: { content: JSON.stringify({
+    text: "¿Qué consultas recibes por WhatsApp?", agentSlugs: [],
+  }) } }] }));
+  const { POST } = await import("./route");
+  expect((await POST(request(question))).status).toBe(200);
+  const [url, options] = upstream.mock.calls[0];
+  const sent = JSON.parse(options.body);
+  expect(url).toBe("https://api.proveedor.example/v1/chat/completions");
+  expect(options.headers.Authorization).toBe("Bearer clave-de-pago");
+  expect(sent.model).toBe("modelo-de-pago");
+  expect(sent).not.toHaveProperty("provider");
+});
+
+it("no llama al proveedor si la URL configurada no es https", async () => {
+  const { POST } = await import("./route");
+  for (const value of ["http://api.proveedor.example/v1/chat/completions", "no es una url"]) {
+    vi.stubEnv("ADVISOR_API_URL", value);
+    expect((await POST(request(question))).status).toBe(503);
+  }
+  expect(upstream).not.toHaveBeenCalled();
 });

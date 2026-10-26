@@ -35,6 +35,25 @@ ${JSON.stringify(agents.map(a => ({ slug: a.slug, name: a.name, description: a.d
   tags: a.tags, industries: a.industries, integrations: a.integrations, autonomy: a.autonomy, pricing: a.pricing })))}
 `;
 
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+// Any OpenAI-compatible chat completions endpoint. OpenRouter stays the default, and the
+// OPENROUTER_* names still work so existing env files don't need changes.
+function readProvider() {
+  const env = process.env;
+  const key = env.ADVISOR_API_KEY?.trim() || env.OPENROUTER_API_KEY?.trim();
+  if (!key || key.includes("...")) return null;
+  let url: URL;
+  try { url = new URL(env.ADVISOR_API_URL?.trim() || OPENROUTER_URL); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  return {
+    url: url.href,
+    key,
+    model: env.ADVISOR_MODEL?.trim() || env.OPENROUTER_MODEL?.trim() || "openai/gpt-4.1-nano",
+    isOpenRouter: url.hostname === "openrouter.ai",
+  };
+}
+
 // Local demo guard, shared by visitors to this process; not a production quota or persistent budget.
 let windowStart = 0;
 let requests = 0;
@@ -53,8 +72,8 @@ export async function POST(request: Request) {
     }
   } catch { return failure("Solicitud no permitida.", 403); }
 
-  const key = process.env.OPENROUTER_API_KEY?.trim();
-  if (!key || key.includes("...")) return failure("El asesor IA aún no está configurado. Puedes usar la demo local.", 503);
+  const provider = readProvider();
+  if (!provider) return failure("El asesor IA aún no está configurado. Puedes usar la demo local.", 503);
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     return failure("Formato de mensaje no válido.", 415);
   }
@@ -84,16 +103,17 @@ export async function POST(request: Request) {
   requests++;
   active++;
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch(provider.url, {
       method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${provider.key}`, "Content-Type": "application/json" },
       signal: AbortSignal.any([request.signal, AbortSignal.timeout(25000)]),
       body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL?.trim() || "openai/gpt-4.1-nano",
+        model: provider.model,
         messages: [{ role: "system", content: systemPrompt }, ...input.messages],
         max_tokens: 600,
         temperature: 0.2,
-        provider: { require_parameters: true },
+        // OpenRouter-only option; other OpenAI-compatible APIs may reject unknown fields.
+        ...(provider.isOpenRouter && { provider: { require_parameters: true } }),
         response_format: {
           type: "json_schema",
           json_schema: { name: "agent_advisor", strict: true, schema: {

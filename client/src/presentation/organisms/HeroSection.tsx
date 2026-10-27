@@ -11,7 +11,7 @@ export function HeroSection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_30%,rgba(40,127,240,0.25),transparent_65%),radial-gradient(ellipse_at_20%_80%,rgba(66,199,232,0.12),transparent_55%)]"
       />
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-12 lg:py-24">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-12 lg:py-24">
         <div className="max-w-2xl">
           <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#42C7E8]/25 bg-[#42C7E8]/5 px-3.5 py-2 text-xs font-medium text-[#42C7E8] backdrop-blur-sm">
             <Sparkles size={14} aria-hidden="true" /> IA especializada para tu negocio
@@ -54,16 +54,15 @@ export function HeroSection() {
             Exploración sin registro · Agentes propios · Asesoría a medida
           </p>
         </div>
-        {/* Hueco reservado: el robot va superpuesto a toda la sección, pero
-            la rejilla necesita que esta columna siga ocupando su sitio. */}
-        <div aria-hidden="true" className="aspect-[1316/1195] w-full max-w-[460px] lg:max-w-none" />
+        {/* El robot vive dentro de su propia caja, no superpuesto a toda la
+            sección. Superpuesto quedaba bien en escritorio —cae sobre la
+            columna derecha— pero en móvil no hay columna y tapaba el titular
+            y los botones. Aquí la rejilla lo coloca: al lado en escritorio,
+            debajo del texto en móvil. */}
+        <div className="relative mx-auto aspect-[1316/1195] w-full max-w-[460px] lg:aspect-auto lg:min-h-[560px] lg:max-w-none">
+          <AiRobotStage className="absolute inset-0" />
+        </div>
       </div>
-
-      {/* Encima del hero entero: la coreografía sale de la órbita y se acerca
-          al titular, así que no puede vivir dentro de una columna. Va detrás
-          del texto en el orden de pintado y sin puntero, para no tapar los
-          botones. */}
-      <AiRobotStage className="absolute inset-0 z-0" />
     </section>
   );
 }

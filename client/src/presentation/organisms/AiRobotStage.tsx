@@ -53,14 +53,24 @@ export function AiRobotStage({ className = "" }: AiRobotStageProps) {
 
         // El encuadre se mide cada vez: el hero cambia de alto con el ancho
         // de la ventana. Es uno solo y fijo; el robot no cambia de tamaño.
+        // Proporciones del modelo a escala 1, en píxeles: 300 de alto por
+        // ALTO_BASE, y el ancho sale de su caja envolvente (0,213 / 0,374).
+        const ALTO_BASE = 300;
+        const ANCHO_BASE = ALTO_BASE * 0.57;
+
         const encuadre = () => {
           const { clientWidth, clientHeight } = contenedor;
+          // Se ajusta a la caja por el lado que apriete, no por uno fijo: con
+          // una escala fija el robot se salía por abajo en móvil, y midiendo
+          // sólo el ancho seguía sin caber de alto. El tope de 1,85 es el
+          // tamaño aprobado en escritorio; de ahí no pasa aunque sobre sitio.
+          const cabePorAlto = (clientHeight * 0.88) / ALTO_BASE;
+          const cabePorAncho = (clientWidth * 0.9) / ANCHO_BASE;
+          const escala = Math.min(1.85, cabePorAlto, cabePorAncho);
+
           return {
-            punto: {
-              x: clientWidth > 900 ? clientWidth * 0.74 : clientWidth * 0.5,
-              y: clientHeight * 0.86,
-            },
-            escala: 1.85,
+            punto: { x: clientWidth * 0.5, y: clientHeight * 0.97 },
+            escala,
           };
         };
 

@@ -39,6 +39,8 @@ docker compose up --build -d --wait frontend
 
 Abrir http://localhost:3001/chat/ y elegir **Asesor IA**. Modelo inicial: `openai/gpt-4.1-nano`; `OPENROUTER_MODEL` permite otro modelo con salida JSON por esquema. Repetir el comando al cambiar variables. Sin clave, **Demo local** funciona sin enviar mensajes. Las pruebas simulan OpenRouter y no consumen créditos.
 
+Para cambiar de proveedor sin tocar código, completar en el mismo archivo `ADVISOR_API_URL` (endpoint https de chat completions compatible con OpenAI), `ADVISOR_API_KEY` y `ADVISOR_MODEL`; tienen prioridad sobre las variables `OPENROUTER_*`. La opción `provider` propia de OpenRouter solo se envía cuando la URL es de OpenRouter. El proveedor debe aceptar `response_format` con `json_schema`. Si cambia el proveedor, actualizar también el aviso de privacidad de `/chat`, que hoy nombra a OpenRouter.
+
 Configurar un presupuesto de prueba para la clave en OpenRouter. El límite en memoria se reinicia con el proceso y no sustituye ese presupuesto. El endpoint no tiene autenticación: mantenerlo en localhost; antes de publicarlo requiere autenticación y cuotas persistentes. El asesor necesita servidor Next.js y no funciona mediante exportación HTML estática.
 
 Esta imagen usa `next dev`: **no es un despliegue de producción**. No ejecuta el build/export heredado ni inicia Laravel o una base. `server/Dockerfile` sigue siendo legado: usa `artisan serve`, carece de una arquitectura de producción validada y no forma parte de este Compose. Se añadió `.dockerignore` al backend para excluir credenciales y datos del contexto, sin construir ni ejecutar esa imagen.

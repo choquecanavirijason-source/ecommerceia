@@ -30,6 +30,8 @@ La lógica de descubrimiento y recomendación (`application/agents/`) recibe dat
 
 El hero usa la imagen 2D `robot-demo.jpg`. Hubo una escena 3D (GLB con rig de 18 huesos animado por código, optimizada de 5,7 MB a 1,4 MB con Meshopt y texturas WebP) que se retiró a petición del cliente junto con la mano que rebotaba; su código y el modelo se borraron y quedan en el historial de git.
 
+El acceso de la demo (`/acceso` y `/acceso/admin`) reutiliza el contrato `AuthRepository` y los casos de uso que ya existían, pero con una implementación propia que no llama a ninguna API: la del ecommerce pertenece a otro cliente. Las cuentas están en `src/demo/accounts.ts` y se enseñan en pantalla porque no protegen nada. La sesión vive en `sessionStorage` con clave propia, separada de las `unocompras-*`. No es autenticación real y así queda dicho en la interfaz; cuando exista base independiente se escribe otra implementación del mismo contrato y los consumidores no cambian.
+
 ## Próximas etapas
 
 1. **Ficha comercial:** casos de uso, requisitos y límites del agente; comparación y presentación de planes cuando exista contenido definido. No presentar capacidades ficticias como disponibles.

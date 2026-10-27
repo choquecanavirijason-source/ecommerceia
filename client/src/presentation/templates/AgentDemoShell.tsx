@@ -7,6 +7,7 @@ import { AgentLogo } from "@/presentation/atoms/AgentLogo";
 import { SolutionsMenu } from "@/presentation/organisms/SolutionsMenu";
 import { Search, MessageCircle, Compass, Play, FileText } from "lucide-react";
 import { AnimatedIcon } from "@/presentation/atoms/AnimatedIcon";
+import { SessionNav } from "@/presentation/molecules/SessionNav";
 import styles from "./AgentNavigation.module.css";
 
 const links = [
@@ -34,7 +35,10 @@ export function AgentDemoShell({ children }: { children: ReactNode }) {
             Chat
           </Link>
         </nav>
-        <Link href="/agentes#buscar-agentes" data-icon-trigger aria-label="Buscar agentes" className={`${styles.item} ${styles.search}`}><AnimatedIcon icon={Search} motion="scan" size={16} /><span>Buscar</span></Link>
+        <div className={`${styles.search} flex items-center gap-3`}>
+          <Link href="/agentes#buscar-agentes" data-icon-trigger aria-label="Buscar agentes" className={styles.item}><AnimatedIcon icon={Search} motion="scan" size={16} /><span>Buscar</span></Link>
+          <SessionNav />
+        </div>
       </div>
     </header>
     <p className="bg-[#0B1D34] px-4 py-2 text-center text-xs text-[#91A7BC]">Demo con datos de prueba · Sin envíos ni compras</p>
